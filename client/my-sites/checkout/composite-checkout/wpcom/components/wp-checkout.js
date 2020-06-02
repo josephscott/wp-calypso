@@ -225,11 +225,21 @@ export default function WPCheckout( {
 								// Touch the fields so they display validation errors
 								touchContactFields();
 								// Update tax location in cart
-								updateLocation( {
-									countryCode: contactInfo.countryCode.value,
-									postalCode: contactInfo.postalCode.value,
-									subdivisionCode: contactInfo.state.value,
-								} );
+								const nonTaxPaymentMethods = [ 'full-credits', 'free-purchase' ];
+								if ( nonTaxPaymentMethods.includes( activePaymentMethod.id ) ) {
+									// this data is intentionally empty so we do not charge taxes
+									updateLocation( {
+										countryCode: null,
+										postalCode: null,
+										subdivisionCode: null,
+									} );
+								} else {
+									updateLocation( {
+										countryCode: contactInfo.countryCode.value,
+										postalCode: contactInfo.postalCode.value,
+										subdivisionCode: contactInfo.state.value,
+									} );
+								}
 
 								return validateContactDetailsAndDisplayErrors();
 							} }
