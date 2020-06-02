@@ -180,7 +180,7 @@ export default function WPCheckout( {
 	const updateCartContactDetails = useCallback( () => {
 		// Update tax location in cart
 		const nonTaxPaymentMethods = [ 'full-credits', 'free-purchase' ];
-		if ( ! activePaymentMethod ) {
+		if ( ! activePaymentMethod || ! contactInfo ) {
 			return;
 		}
 		if ( nonTaxPaymentMethods.includes( activePaymentMethod.id ) ) {
@@ -192,9 +192,9 @@ export default function WPCheckout( {
 			} );
 		} else {
 			updateLocation( {
-				countryCode: contactInfo.countryCode.value,
-				postalCode: contactInfo.postalCode.value,
-				subdivisionCode: contactInfo.state.value,
+				countryCode: contactInfo.countryCode?.value ?? '',
+				postalCode: contactInfo.postalCode?.value ?? '',
+				subdivisionCode: contactInfo.state?.value ?? '',
 			} );
 		}
 	}, [ activePaymentMethod, updateLocation, contactInfo ] );
