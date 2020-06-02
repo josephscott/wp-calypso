@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useTranslate } from 'i18n-calypso';
 import styled from '@emotion/styled';
 import {
@@ -177,15 +177,18 @@ export default function WPCheckout( {
 		setActiveStepNumber( 1 );
 	};
 
-	useEffect( () => {
+	const updateCartContactDetails = useCallback( () => {
 		// Update tax location in cart
 		const nonTaxPaymentMethods = [ 'full-credits', 'free-purchase' ];
+		if ( ! activePaymentMethod ) {
+			return;
+		}
 		if ( nonTaxPaymentMethods.includes( activePaymentMethod.id ) ) {
 			// this data is intentionally empty so we do not charge taxes
 			updateLocation( {
-				countryCode: null,
-				postalCode: null,
-				subdivisionCode: null,
+				countryCode: '',
+				postalCode: '',
+				subdivisionCode: '',
 			} );
 		} else {
 			updateLocation( {
@@ -194,7 +197,15 @@ export default function WPCheckout( {
 				subdivisionCode: contactInfo.state.value,
 			} );
 		}
-	}, [ contactInfo, activePaymentMethod.id, updateLocation ] );
+	}, [ activePaymentMethod, updateLocation, contactInfo ] );
+
+	const previousPaymentMethodId = useRef();
+	useEffect( () => {
+		if ( activePaymentMethod?.id !== previousPaymentMethodId.current ) {
+			previousPaymentMethodId.current = activePaymentMethod.id;
+			updateCartContactDetails();
+		}
+	}, [ activePaymentMethod, updateCartContactDetails ] );
 
 	return (
 		<Checkout>
@@ -243,6 +254,8 @@ export default function WPCheckout( {
 								setShouldShowContactDetailsValidationErrors( true );
 								// Touch the fields so they display validation errors
 								touchContactFields();
+								updateCartContactDetails();
+
 								return validateContactDetailsAndDisplayErrors();
 							} }
 							activeStepContent={
