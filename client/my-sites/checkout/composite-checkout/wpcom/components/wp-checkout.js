@@ -447,10 +447,14 @@ function useUpdateCartLocationWhenPaymentMethodChanges(
 	updateCartContactDetails
 ) {
 	const previousPaymentMethodId = useRef();
+	const hasInitialized = useRef( false );
 	useEffect( () => {
-		if ( activePaymentMethod?.id !== previousPaymentMethodId.current ) {
+		if ( activePaymentMethod?.id && activePaymentMethod.id !== previousPaymentMethodId.current ) {
 			previousPaymentMethodId.current = activePaymentMethod.id;
-			updateCartContactDetails();
+			if ( hasInitialized.current ) {
+				updateCartContactDetails();
+			}
+			hasInitialized.current = true;
 		}
 	}, [ activePaymentMethod, updateCartContactDetails ] );
 }
