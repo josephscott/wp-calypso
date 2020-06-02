@@ -177,6 +177,25 @@ export default function WPCheckout( {
 		setActiveStepNumber( 1 );
 	};
 
+	useEffect( () => {
+		// Update tax location in cart
+		const nonTaxPaymentMethods = [ 'full-credits', 'free-purchase' ];
+		if ( nonTaxPaymentMethods.includes( activePaymentMethod.id ) ) {
+			// this data is intentionally empty so we do not charge taxes
+			updateLocation( {
+				countryCode: null,
+				postalCode: null,
+				subdivisionCode: null,
+			} );
+		} else {
+			updateLocation( {
+				countryCode: contactInfo.countryCode.value,
+				postalCode: contactInfo.postalCode.value,
+				subdivisionCode: contactInfo.state.value,
+			} );
+		}
+	}, [ contactInfo, activePaymentMethod.id, updateLocation ] );
+
 	return (
 		<Checkout>
 			<CheckoutSummaryArea className={ isSummaryVisible ? 'is-visible' : '' }>
@@ -224,23 +243,6 @@ export default function WPCheckout( {
 								setShouldShowContactDetailsValidationErrors( true );
 								// Touch the fields so they display validation errors
 								touchContactFields();
-								// Update tax location in cart
-								const nonTaxPaymentMethods = [ 'full-credits', 'free-purchase' ];
-								if ( nonTaxPaymentMethods.includes( activePaymentMethod.id ) ) {
-									// this data is intentionally empty so we do not charge taxes
-									updateLocation( {
-										countryCode: null,
-										postalCode: null,
-										subdivisionCode: null,
-									} );
-								} else {
-									updateLocation( {
-										countryCode: contactInfo.countryCode.value,
-										postalCode: contactInfo.postalCode.value,
-										subdivisionCode: contactInfo.state.value,
-									} );
-								}
-
 								return validateContactDetailsAndDisplayErrors();
 							} }
 							activeStepContent={
