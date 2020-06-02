@@ -46,6 +46,7 @@ import isAtomicSite from 'state/selectors/is-site-automated-transfer';
 import { activatePlugin, fetchPlugins } from 'state/plugins/installed/actions';
 import { getPlugins } from 'state/plugins/installed/selectors';
 import { errorNotice } from 'state/notices/actions';
+import inEditorDeprecationGroup from 'state/editor-deprecation-group/selectors/in-editor-deprecation-group';
 
 class InlineHelpPopover extends Component {
 	static propTypes = {
@@ -342,9 +343,10 @@ const optIn = ( siteId, gutenbergUrl ) => {
 function mapStateToProps( state ) {
 	const siteId = getSelectedSiteId( state );
 	const currentRoute = getCurrentRoute( state );
-	const classicUrl = isEnabled( 'editor/after-deprecation' )
-		? getWpAdminClassicEditorRedirectionUrl( state, siteId )
-		: `/${ currentRoute.replace( '/block-editor/', '' ) }`;
+	const classicUrl =
+		isEnabled( 'editor/after-deprecation' ) && inEditorDeprecationGroup( state )
+			? getWpAdminClassicEditorRedirectionUrl( state, siteId )
+			: `/${ currentRoute.replace( '/block-editor/', '' ) }`;
 	const section = getSection( state );
 	const isCalypsoClassic = section.group && section.group === 'editor';
 	const optInEnabled = isGutenbergOptInEnabled( state, siteId );

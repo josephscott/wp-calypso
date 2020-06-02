@@ -44,6 +44,7 @@ import ConvertToBlocksDialog from 'components/convert-to-blocks';
 import config from 'config';
 import EditorDocumentHead from 'post-editor/editor-document-head';
 import isUnlaunchedSite from 'state/selectors/is-unlaunched-site';
+import inEditorDeprecationGroup from 'state/editor-deprecation-group/selectors/in-editor-deprecation-group';
 
 /**
  * Types
@@ -681,7 +682,10 @@ const mapStateToProps = (
 	}
 
 	// Needed to pass through feature flag to iframed editor.
-	if ( window.location.href.indexOf( 'editor/after-deprecation' ) > -1 ) {
+	if (
+		window.location.href.indexOf( 'editor/after-deprecation' ) > -1 ||
+		inEditorDeprecationGroup( state )
+	) {
 		queryArgs[ 'editor-after-deprecation' ] = 1;
 	}
 

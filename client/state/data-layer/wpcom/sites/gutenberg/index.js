@@ -19,6 +19,7 @@ import { dispatchRequest } from 'state/data-layer/wpcom-http/utils';
 import { http } from 'state/data-layer/wpcom-http/actions';
 import { registerHandlers } from 'state/data-layer/handler-registry';
 import { replaceHistory } from 'state/ui/actions';
+import inDeprecationGroup from 'state/editor-deprecation-group/selectors/in-editor-deprecation-group';
 import 'state/editor-deprecation-group/init';
 
 const fetchGutenbergOptInData = ( action ) =>
@@ -69,7 +70,7 @@ const updateSelectedEditor = ( action ) =>
 const setSelectedEditorAndRedirect = (
 	{ siteId, redirectUrl },
 	{ editor_web: editor, opt_in: optIn, opt_out: optOut }
-) => ( dispatch ) => {
+) => ( dispatch, getState ) => {
 	dispatch( { type: EDITOR_TYPE_SET, siteId, editor } );
 	dispatch( { type: GUTENBERG_OPT_IN_OUT_SET, siteId, optIn, optOut } );
 
@@ -81,6 +82,7 @@ const setSelectedEditorAndRedirect = (
 	}
 	if (
 		isEnabled( 'editor/after-deprecation' ) &&
+		inDeprecationGroup( getState() ) &&
 		has( window, 'location.replace' ) &&
 		'classic' === editor
 	) {
