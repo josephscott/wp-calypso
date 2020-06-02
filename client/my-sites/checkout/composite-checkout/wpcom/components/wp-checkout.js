@@ -199,13 +199,7 @@ export default function WPCheckout( {
 		}
 	}, [ activePaymentMethod, updateLocation, contactInfo ] );
 
-	const previousPaymentMethodId = useRef();
-	useEffect( () => {
-		if ( activePaymentMethod?.id !== previousPaymentMethodId.current ) {
-			previousPaymentMethodId.current = activePaymentMethod.id;
-			updateCartContactDetails();
-		}
-	}, [ activePaymentMethod, updateCartContactDetails ] );
+	useUpdateCartLocationWhenPaymentMethodChanges( activePaymentMethod, updateCartContactDetails );
 
 	return (
 		<Checkout>
@@ -447,3 +441,16 @@ const CheckoutTermsUI = styled.div`
 		text-decoration: none;
 	}
 `;
+
+function useUpdateCartLocationWhenPaymentMethodChanges(
+	activePaymentMethod,
+	updateCartContactDetails
+) {
+	const previousPaymentMethodId = useRef();
+	useEffect( () => {
+		if ( activePaymentMethod?.id !== previousPaymentMethodId.current ) {
+			previousPaymentMethodId.current = activePaymentMethod.id;
+			updateCartContactDetails();
+		}
+	}, [ activePaymentMethod, updateCartContactDetails ] );
+}
