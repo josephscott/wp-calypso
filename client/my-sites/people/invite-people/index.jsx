@@ -50,6 +50,7 @@ import withTrackingTool from 'lib/analytics/with-tracking-tool';
  * Style dependencies
  */
 import './style.scss';
+import isSiteWPForTeams from '../../../state/selectors/is-site-wpforteams';
 
 /**
  * Module variables
@@ -359,7 +360,7 @@ class InvitePeople extends React.Component {
 							explanation={ this.renderRoleExplanation() }
 						/>
 
-						{ this.isExternalRole( this.state.role ) && (
+						{ ! this.props.isWPForTeamsSite && this.isExternalRole( this.state.role ) && (
 							<ContractorSelect
 								onChange={ this.onExternalChange }
 								checked={ this.state.isExternal }
@@ -478,6 +479,7 @@ const connectComponent = connect(
 			showSSONotice: !! ( activating || active ),
 			isJetpack: isJetpackSite( state, siteId ),
 			isSiteAutomatedTransfer: isSiteAutomatedTransfer( state, siteId ),
+			isWPForTeamsSite: isSiteWPForTeams( state, siteId ),
 		};
 	},
 	( dispatch ) => ( {
