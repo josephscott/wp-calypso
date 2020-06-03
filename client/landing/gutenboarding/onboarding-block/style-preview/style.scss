@@ -7,9 +7,16 @@
 	display: flex;
 	flex-direction: column;
 
+	// Adaptive height calculations
+	// Full height comes from viewport heigh - header - some space for the preview's box-shadow (20px)
+	$calc-base: '100vh - #{$gutenboarding-header-height + 20px} ';
+
 	@include break-small {
-		// Full height comes from viewport heigh - header - some space for the preview's box-shadow (20px)
-		height: calc( 100vh - #{$gutenboarding-header-height + 20px} );
+		height: calc( max( #{$calc-base} ), 400px );
+	}
+
+	@include break-wide {
+		height: calc( max( #{$calc-base} ), 600px );
 	}
 }
 
