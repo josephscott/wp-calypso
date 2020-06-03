@@ -98,6 +98,7 @@ export default function WPCheckout( {
 	subtotal,
 	isCartPendingUpdate,
 	showErrorMessageBriefly,
+	isWhiteGloveOffer,
 } ) {
 	const translate = useTranslate();
 	const couponFieldStateProps = useCouponFieldState( submitCoupon );
@@ -212,6 +213,7 @@ export default function WPCheckout( {
 							variantSelectOverride={ variantSelectOverride }
 							getItemVariants={ getItemVariants }
 							siteUrl={ siteUrl }
+							isWhiteGloveOffer={ isWhiteGloveOffer }
 						/>
 					}
 					titleContent={ <OrderReviewTitle /> }
